@@ -1,0 +1,18 @@
+{
+    "name": "UnityPython.Tests",
+    "rootNamespace": "UnityPython.Tests",
+    "references": [
+        "GUID:3d4e26b79b8aeb447bde58124e9de001"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
