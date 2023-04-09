@@ -9,7 +9,7 @@ namespace UnityPython.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            PythonLifeCycle.Initialize();
+            PythonLifeCycle.Initialize("test_project");
         }
 
         [OneTimeTearDown]
@@ -53,6 +53,21 @@ namespace UnityPython.Tests
                 Assert.AreEqual(6d, (double)d[0]);
                 Assert.AreEqual(10d, (double)d[1]);
                 Assert.AreEqual(12d, (double)d[2]);
+            }
+        }
+
+        [Test]
+        public void CallMyScriptsPasses()
+        {
+            using (Py.GIL())
+            {
+                using dynamic testModule1 = Py.Import("test_module1");
+                var result1 = (int)testModule1.add(3, 8);
+                Assert.AreEqual(11, result1);
+
+                using dynamic testModule2 = Py.Import("test_package").GetAttr("test_module2");
+                var result2 = (int)testModule2.mul(3, 8);
+                Assert.AreEqual(24, result2);
             }
         }
     }

@@ -9,6 +9,7 @@ namespace UnityPython
         private const string PythonFolder = "python-3.11.3-embed-amd64";
         private const string PythonDll = "python311.dll";
         private const string PythonZip = "python311.zip";
+        private const string PythonProject = "myproject";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void PythonInitialize()
@@ -27,7 +28,7 @@ namespace UnityPython
 #else
             Application.quitting += Shutdown;
 #endif
-            Initialize();
+            Initialize(PythonProject);
         }
 
         public static void Initialize(string appendPythonPath = "")
