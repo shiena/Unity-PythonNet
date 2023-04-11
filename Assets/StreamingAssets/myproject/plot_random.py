@@ -13,15 +13,16 @@ def draw():
     canvas.draw()
     buf = canvas.buffer_rgba()
     width, height = canvas.get_width_height()
-    pixels = np.frombuffer(buf, dtype=np.uint8).reshape(height, width, 4)
-    return np.flipud(pixels).copy()
+    pixels = np.array(buf, dtype=np.uint8).reshape(height, width, 4)
+    bytes = np.flipud(pixels).copy()
+    addr, w, h, s = getarrayaddr(bytes)
+    return (bytes, addr, w, h, s)
 
 def getarrayaddr(pixels):
     h, w, s = pixels.shape
-    c_addr = pixels.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8 * w * h * s)).contents
-    return (ctypes.addressof(c_addr), w, h, s)
+    c_ptr = pixels.ctypes.data_as(ctypes.POINTER(ctypes.c_uint8 * w * h * s)).contents
+    return (ctypes.addressof(c_ptr), w, h, s)
 
 if __name__ == '__main__':
-    array = draw()
-    ptr, w, h, s = getarrayaddr(array)
-    print(ptr, w, h, s)
+    bytes, addr, w, h, s = draw()
+    print(addr, w, h, s)

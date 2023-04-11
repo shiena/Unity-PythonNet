@@ -27,18 +27,18 @@ namespace UnityPython
             {
                 using dynamic plotRandom = Py.Import("plot_random");
 
-                // numpy配列のGCを防ぐためにC#側で保持して別途アドレス変換を呼び出す
-                using var pixels = plotRandom.draw();
-                using var ret = plotRandom.getarrayaddr(pixels);
-                var (addr, w, h, s) = ((long)ret[0], (int)ret[1], (int)ret[2], (int)ret[3]);
-
-                var ptr = new IntPtr(addr);
-                ReadOnlySpan<byte> span;
-                unsafe
+                using dynamic ret = plotRandom.draw();
+                using (ret[0]) // To prevent GC of the numpy array, keep the byte array read from 'addr' on the C# side until it is fully loaded.
                 {
-                    span = new ReadOnlySpan<byte>(ptr.ToPointer(), w*h*s);
+                    var (addr, w, h, s) = ((long)ret[1], (int)ret[2], (int)ret[3], (int)ret[4]);
+                    var ptr = new IntPtr(addr);
+                    ReadOnlySpan<byte> span;
+                    unsafe
+                    {
+                        span = new ReadOnlySpan<byte>(ptr.ToPointer(), w*h*s);
+                    }
+                    LoadImage(span, w, h);
                 }
-                LoadImage(span, w, h);
             }
         }
 
@@ -46,7 +46,8 @@ namespace UnityPython
         {
             var tex = new Texture2D(w, h, TextureFormat.RGBA32, false)
             {
-                filterMode = FilterMode.Point
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp
             };
             tex.LoadRawTextureData(rawData.ToArray());
             tex.Apply();
