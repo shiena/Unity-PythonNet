@@ -1,5 +1,7 @@
 using Python.Runtime;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,18 +12,48 @@ namespace UnityPython
     {
         [SerializeField] private RawImage _rawImage;
         [SerializeField] private Button _button;
+        private CancellationTokenSource cts;
+        private bool _executingPython = false;
 
         private void OnEnable()
         {
+            cts = new CancellationTokenSource();
             _button.onClick.AddListener(PlotFig);
         }
 
         private void OnDisable()
         {
             _button.onClick.RemoveListener(PlotFig);
+            cts.Cancel();
+            cts.Dispose();
         }
 
-        private void PlotFig()
+        private async void PlotFig()
+        {
+            if (_executingPython)
+            {
+                return;
+            }
+
+            _executingPython = true;
+            var state = PythonEngine.BeginAllowThreads();
+            try
+            {
+                var (bytes, w, h) = await Task.Run(Plot, cts.Token);
+                LoadImage(bytes, w, h);
+            }
+            catch (OperationCanceledException e) when (e.CancellationToken != cts.Token)
+            {
+                throw;
+            }
+            finally
+            {
+                PythonEngine.EndAllowThreads(state);
+                _executingPython = false;
+            }
+        }
+
+        private (byte[], int, int) Plot()
         {
             using (Py.GIL())
             {
@@ -37,7 +69,7 @@ namespace UnityPython
                     {
                         span = new ReadOnlySpan<byte>(ptr.ToPointer(), w*h*s);
                     }
-                    LoadImage(span, w, h);
+                    return (span.ToArray(), w, h);
                 }
             }
         }
