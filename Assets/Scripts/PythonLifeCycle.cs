@@ -14,21 +14,14 @@ namespace UnityPython
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void PythonInitialize()
         {
-#if UNITY_EDITOR
-            void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange change)
-            {
-                if (change == UnityEditor.PlayModeStateChange.ExitingPlayMode)
-                {
-                    Shutdown();
-                    UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-                }
-            }
-
-            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
-#else
-            Application.quitting += Shutdown;
-#endif
+            Application.quitting += PythonShutdown;
             Initialize(PythonProject);
+        }
+
+        private static void PythonShutdown()
+        {
+            Application.quitting -= PythonShutdown;
+            Shutdown();
         }
 
         public static void Initialize(string appendPythonPath = "")
