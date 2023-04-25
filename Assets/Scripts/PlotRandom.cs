@@ -13,12 +13,13 @@ namespace UnityPython
         [SerializeField] private RawImage _rawImage;
         [SerializeField] private Button _button;
         private CancellationTokenSource cts;
-        private bool _executingPython = false;
+        private SemaphoreSlim _semaphoreSlim;
 
         private void OnEnable()
         {
             cts = new CancellationTokenSource();
             _button.onClick.AddListener(PlotFig);
+            _semaphoreSlim = new SemaphoreSlim(1, 1);
         }
 
         private void OnDisable()
@@ -26,16 +27,12 @@ namespace UnityPython
             _button.onClick.RemoveListener(PlotFig);
             cts.Cancel();
             cts.Dispose();
+            _semaphoreSlim.Dispose();
         }
 
         private async void PlotFig()
         {
-            if (_executingPython)
-            {
-                return;
-            }
-
-            _executingPython = true;
+            await _semaphoreSlim.WaitAsync(cts.Token);
             var state = PythonEngine.BeginAllowThreads();
             try
             {
@@ -49,7 +46,7 @@ namespace UnityPython
             finally
             {
                 PythonEngine.EndAllowThreads(state);
-                _executingPython = false;
+                _semaphoreSlim.Release();
             }
         }
 
