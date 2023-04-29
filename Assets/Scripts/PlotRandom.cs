@@ -53,10 +53,11 @@ namespace UnityPython
 
         private async void PlotFig()
         {
-            await _semaphoreSlim.WaitAsync(cts.Token);
-            var state = PythonEngine.BeginAllowThreads();
+            IntPtr? state = null;
             try
             {
+                await _semaphoreSlim.WaitAsync(cts.Token);
+                state = PythonEngine.BeginAllowThreads();
                 var (bytes, w, h) = await Task.Run(Plot, cts.Token);
                 LoadImage(bytes, w, h);
             }
@@ -66,7 +67,10 @@ namespace UnityPython
             }
             finally
             {
-                PythonEngine.EndAllowThreads(state);
+                if (state.HasValue)
+                {
+                    PythonEngine.EndAllowThreads(state.Value);
+                }
                 _semaphoreSlim.Release();
             }
         }
