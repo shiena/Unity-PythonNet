@@ -14,6 +14,7 @@ namespace UnityPython
         [SerializeField] private Button _button;
         private CancellationTokenSource cts;
         private SemaphoreSlim _semaphoreSlim;
+        private (Texture2D tex, int width, int height) _tex;
 
         private void OnEnable()
         {
@@ -28,6 +29,26 @@ namespace UnityPython
             cts.Cancel();
             cts.Dispose();
             _semaphoreSlim.Dispose();
+        }
+
+        private void Start()
+        {
+            (_tex.width, _tex.height) = (2, 2);
+            _tex.tex = new Texture2D(_tex.width, _tex.height, TextureFormat.RGBA32, false)
+            {
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp
+            };
+            var rawData = _tex.tex.GetRawTextureData();
+            Array.Fill(rawData, (byte)255);
+            _tex.tex.LoadRawTextureData(rawData);
+            _tex.tex.Apply();
+            _rawImage.texture = _tex.tex;
+        }
+
+        private void OnDestroy()
+        {
+            Destroy(_tex.tex);
         }
 
         private async void PlotFig()
@@ -73,20 +94,13 @@ namespace UnityPython
 
         private void LoadImage(ReadOnlySpan<byte> rawData, int w, int h)
         {
-            var tex = new Texture2D(w, h, TextureFormat.RGBA32, false)
+            if (_tex.width != w || _tex.height != h)
             {
-                filterMode = FilterMode.Point,
-                wrapMode = TextureWrapMode.Clamp
-            };
-            tex.LoadRawTextureData(rawData.ToArray());
-            tex.Apply();
-            Destroy(_rawImage.texture);
-            _rawImage.texture = tex;
-        }
-
-        private void OnDestroy()
-        {
-            Destroy(_rawImage.texture);
+                (_tex.width, _tex.height) = (w, h);
+                _tex.tex.Reinitialize(_tex.width, _tex.height);
+            }
+            _tex.tex.LoadRawTextureData(rawData.ToArray());
+            _tex.tex.Apply();
         }
     }
 }
