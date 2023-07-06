@@ -38,7 +38,7 @@ namespace UnityPython
             var scripts = $"{pythonHome}/Scripts";
 
             var path = Environment.GetEnvironmentVariable("PATH")?.TrimEnd(';');
-            path = string.IsNullOrEmpty(path) ? $"{pythonHome};{scripts}" : path + ";" + $"{pythonHome};{scripts}";
+            path = string.IsNullOrEmpty(path) ? $"{pythonHome};{scripts}" : $"{pythonHome};{scripts};{path}";
             Environment.SetEnvironmentVariable("PATH", path, EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("DYLD_LIBRARY_PATH", $"{pythonHome}/Lib", EnvironmentVariableTarget.Process);
             Environment.SetEnvironmentVariable("PYTHONNET_PYDLL", $"{pythonHome}/{PythonDll}", EnvironmentVariableTarget.Process);
