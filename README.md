@@ -2,7 +2,7 @@
 
 ## Development Environment
 
-- Unity2022.3.3f1
+- Unity2022.3.20f1
 - [NuGet For Unity](https://github.com/GlitchEnzo/NuGetForUnity) 3.1.3
 - [Python.NET](https://www.nuget.org/packages/pythonnet) 3.0.1
 - [Python Embeddable Package](https://www.python.org/downloads/windows/) 3.11.3
