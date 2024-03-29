@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="Root" style="flex-grow: 1;">
+        <ui:VisualElement style="flex-grow: 1; align-items: center; justify-content: center; background-color: rgb(0, 0, 0);">
+            <ui:VisualElement name="Image" style="flex-grow: 1; width: 640px; height: 480px; max-width: 640px; max-height: 480px; min-width: 640px; min-height: 480px; align-items: auto;" />
+        </ui:VisualElement>
+        <ui:Button text="Plot" parse-escape-sequences="false" display-tooltip-when-elided="false" enable-rich-text="false" name="PlotButton" style="max-height: 10%; min-height: 10%; font-size: 72px;" />
+    </ui:VisualElement>
+</ui:UXML>
