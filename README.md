@@ -26,4 +26,5 @@ This is a sample project that integrates Unity and Python.NET. Pressing the *Plo
     + python-3.11.3-embed-amd64/ : python runtime
     + myproject/
       + plot_random.py           : python script for graph plot
+      + requirements.txt         : a list of items to be installed using pip install
 ```
