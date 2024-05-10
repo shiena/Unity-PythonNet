@@ -11,3 +11,19 @@
 This is a sample project that integrates Unity and Python.NET. Pressing the *Plot* button will display an image of a graph drawn using matplotlib in Python.
 
 <img src="https://raw.githubusercontent.com/shiena/Unity-PythonNet/main/Documents~/preview.png" title="preview">
+
+## Project Structure
+
+```
++ Assets/
+  + Scenes/
+    + MainView.unity             : Main scene uning UI Toolkit
+    + SampleScene.unity          : Main scene using Unity UI
+  + Scripts/
+    + PythonLifeCycle.cs         : Python.NET initializer
+    + PlotRandom.cs              : Call python script from C# using Python.NET
+  + StreamingAssets/
+    + python-3.11.3-embed-amd64/ : python runtime
+    + myproject/
+      + plot_random.py           : python script for graph plot
+```
