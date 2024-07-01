@@ -135,7 +135,7 @@
       "dependencies": {
         "org.nuget.system.reflection.emit": "4.6.0"
       },
-      "url": "https://unitynuget-registry.azurewebsites.net"
+      "url": "https://package.openupm.com"
     },
     "org.nuget.system.reflection.emit": {
       "version": "4.6.0",
@@ -144,14 +144,14 @@
       "dependencies": {
         "org.nuget.system.reflection.emit.ilgeneration": "4.6.0"
       },
-      "url": "https://unitynuget-registry.azurewebsites.net"
+      "url": "https://package.openupm.com"
     },
     "org.nuget.system.reflection.emit.ilgeneration": {
       "version": "4.6.0",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
-      "url": "https://unitynuget-registry.azurewebsites.net"
+      "url": "https://package.openupm.com"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",
