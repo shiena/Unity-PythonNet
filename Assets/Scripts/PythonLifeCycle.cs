@@ -32,6 +32,7 @@ namespace UnityPython
             var testProject = $"{Application.streamingAssetsPath}/{TestProject}";
             var pythonPath = string.Join(";",
                 $"{myProject}",
+                $"{Application.streamingAssetsPath}/new_folder",
 #if UNITY_EDITOR
                 $"{testProject}",
 #endif
