@@ -12,13 +12,11 @@ namespace UnityPython
     {
         [SerializeField] private RawImage _rawImage;
         [SerializeField] private Button _button;
-        private CancellationTokenSource cts;
         private SemaphoreSlim _semaphoreSlim;
         private (Texture2D tex, int width, int height) _tex;
 
         private void OnEnable()
         {
-            cts = new CancellationTokenSource();
             _button.onClick.AddListener(PlotFig);
             _semaphoreSlim = new SemaphoreSlim(1, 1);
         }
@@ -26,8 +24,6 @@ namespace UnityPython
         private void OnDisable()
         {
             _button.onClick.RemoveListener(PlotFig);
-            cts.Cancel();
-            cts.Dispose();
             _semaphoreSlim.Dispose();
         }
 
@@ -56,12 +52,12 @@ namespace UnityPython
             IntPtr? state = null;
             try
             {
-                await _semaphoreSlim.WaitAsync(cts.Token);
+                await _semaphoreSlim.WaitAsync(destroyCancellationToken);
                 state = PythonEngine.BeginAllowThreads();
-                var (bytes, w, h) = await Task.Run(Plot, cts.Token);
+                var (bytes, w, h) = await Task.Run(Plot, destroyCancellationToken);
                 LoadImage(bytes, w, h);
             }
-            catch (OperationCanceledException e) when (e.CancellationToken != cts.Token)
+            catch (OperationCanceledException e) when (e.CancellationToken != destroyCancellationToken)
             {
                 throw;
             }

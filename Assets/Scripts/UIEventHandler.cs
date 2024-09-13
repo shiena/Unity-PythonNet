@@ -10,7 +10,6 @@ namespace UnityPython
     [RequireComponent(typeof(UIDocument))]
     public class UIEventHandler : MonoBehaviour
     {
-        private CancellationTokenSource _cts;
         private SemaphoreSlim _semaphoreSlim;
         private (Texture2D tex, int width, int height) _tex;
         private Button _plotButton;
@@ -44,7 +43,6 @@ namespace UnityPython
             if ((_plotButton = rootElement.Q<Button>("PlotButton")) is { })
             {
                 _semaphoreSlim = new SemaphoreSlim(1, 1);
-                _cts = new CancellationTokenSource();
 
                 _plotButton.clicked += PlotFig;
             }
@@ -54,8 +52,6 @@ namespace UnityPython
         {
             _plotButton.clicked -= PlotFig;
 
-            _cts.Cancel();
-            _cts.Dispose();
             _semaphoreSlim.Dispose();
             Destroy(_tex.tex);
         }
@@ -65,12 +61,12 @@ namespace UnityPython
             IntPtr? state = null;
             try
             {
-                await _semaphoreSlim.WaitAsync(_cts.Token);
+                await _semaphoreSlim.WaitAsync(destroyCancellationToken);
                 state = PythonEngine.BeginAllowThreads();
-                var (bytes, w, h) = await Task.Run(Plot, _cts.Token);
+                var (bytes, w, h) = await Task.Run(Plot, destroyCancellationToken);
                 LoadImage(bytes, w, h);
             }
-            catch (OperationCanceledException e) when (e.CancellationToken != _cts.Token)
+            catch (OperationCanceledException e) when (e.CancellationToken != destroyCancellationToken)
             {
                 throw;
             }
