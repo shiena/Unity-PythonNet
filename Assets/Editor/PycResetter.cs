@@ -79,6 +79,7 @@ namespace Editor
             var targetFolders = new[]
             {
                 "Assets/StreamingAssets/python-3.11.3-embed-amd64/*",
+                "Assets/StreamingAssets/new_folder/*",
                 "Assets/StreamingAssets/myproject/*",
                 "Assets/StreamingAssets/test_package/*"
             };

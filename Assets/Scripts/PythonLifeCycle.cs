@@ -30,6 +30,7 @@ namespace UnityPython
             var appendPath = string.IsNullOrWhiteSpace(appendPythonPath) ? string.Empty : $"{Application.streamingAssetsPath}/{appendPythonPath}";
             var pythonPath = string.Join(";",
                 $"{appendPath}",
+                $"{Application.streamingAssetsPath}/new_folder",
                 $"{pythonHome}/Lib/site-packages",
                 $"{pythonHome}/{PythonZip}",
                 $"{pythonHome}"

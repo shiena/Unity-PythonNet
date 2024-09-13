@@ -84,7 +84,7 @@ namespace UnityPython
         {
             using (Py.GIL())
             {
-                using dynamic plotRandom = Py.Import("plot_random");
+                using dynamic plotRandom = Py.Import("plot_random2");
 
                 using dynamic ret = plotRandom.draw();
                 using (ret[0]) // To prevent GC of the numpy array, keep the byte array read from 'addr' on the C# side until it is fully loaded.
