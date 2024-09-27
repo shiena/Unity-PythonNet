@@ -4,7 +4,7 @@
 
 - Windows
 - Unity2022.3.46f1 (.NET Framework is required at Api Compatibility Level)
-- [Python.NET](https://www.nuget.org/packages/pythonnet) 3.0.3
+- [Python.NET](https://www.nuget.org/packages/pythonnet) 3.0.4
 - [Python Embeddable Package](https://www.python.org/downloads/windows/) 3.11.3
 
 ## What is this?
