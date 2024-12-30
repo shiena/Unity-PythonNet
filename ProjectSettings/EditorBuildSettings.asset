@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainView.unity
     guid: 02d1b6f9ee261b34d94bc46c5d513999
-  m_configObjects: {}
+  m_configObjects:
+    UnityEditor.XR.VisionOS.VisionOSSettings: {fileID: 11400000, guid: 899bc5303277c564ea6dcb0d0a7b43e7, type: 2}
+    com.unity.polyspatial.xr.xr_settings: {fileID: 11400000, guid: f711c1677eaacf1458d7733f5fe79030, type: 2}
+    com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 8956be2fca2d6fb49aafb74639fbfcdb, type: 2}
