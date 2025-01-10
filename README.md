@@ -30,3 +30,16 @@ This is a sample project that integrates Unity and Python.NET. Pressing the *Plo
       + plot_random.py           : python script for graph plot
       + requirements.txt         : a list of items to be installed using pip install
 ```
+
+## How to add python packages
+
+```sh
+cd Assets\StreamingAssets\python-3.11.3-embed-amd64\
+.\Scripts\pip.exe install matplotlib
+.\Scripts\pip.exe freeze > myproject\requirements.txt
+```
+
+## Known Issues
+
+- `PythonEngine.PythonPath` is not applied when changing a different `PythonEngine.PythonPath` after calling `PythonEngine.Initialize()` / `PythonEngine.Shutdown()`.
+  - Restart Unity if you want to set a different `PythonEngine.PythonPath`.
