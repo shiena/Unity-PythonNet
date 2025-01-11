@@ -9,13 +9,14 @@ namespace UnityPython
         private const string PythonFolder = "python-3.11.3-embed-amd64";
         private const string PythonDll = "python311.dll";
         private const string PythonZip = "python311.zip";
-        private const string PythonProject = "myproject";
+        private const string MyProject = "myproject";
+        private const string TestProject = "test_project";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void PythonInitialize()
         {
             Application.quitting += PythonShutdown;
-            Initialize(PythonProject);
+            Initialize();
         }
 
         private static void PythonShutdown()
@@ -24,12 +25,16 @@ namespace UnityPython
             Shutdown();
         }
 
-        public static void Initialize(string appendPythonPath = "")
+        public static void Initialize()
         {
             var pythonHome = $"{Application.streamingAssetsPath}/{PythonFolder}";
-            var appendPath = string.IsNullOrWhiteSpace(appendPythonPath) ? string.Empty : $"{Application.streamingAssetsPath}/{appendPythonPath}";
+            var myProject = $"{Application.streamingAssetsPath}/{MyProject}";
+            var testProject = $"{Application.streamingAssetsPath}/{TestProject}";
             var pythonPath = string.Join(";",
-                $"{appendPath}",
+                $"{myProject}",
+#if UNITY_EDITOR
+                $"{testProject}",
+#endif
                 $"{pythonHome}/Lib/site-packages",
                 $"{pythonHome}/{PythonZip}",
                 $"{pythonHome}"

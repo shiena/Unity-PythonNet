@@ -9,7 +9,7 @@ namespace UnityPython.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
-            PythonLifeCycle.Initialize("test_project");
+            PythonLifeCycle.Initialize();
         }
 
         [OneTimeTearDown]
