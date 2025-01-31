@@ -12,19 +12,35 @@ namespace UnityPython
     {
         [SerializeField] private RawImage _rawImage;
         [SerializeField] private Button _button;
-        private SemaphoreSlim _semaphoreSlim;
+        private static SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private (Texture2D tex, int width, int height) _tex;
+
+        [RuntimeInitializeOnLoadMethod]
+        private static void Initialize()
+        {
+            Application.wantsToQuit += WantsToQuit;
+
+            bool WantsToQuit()
+            {
+                Task.Run(() =>
+                {
+                    _semaphoreSlim.Wait();
+                    _semaphoreSlim.Dispose();
+                    Application.wantsToQuit -= WantsToQuit;
+                    Application.Quit();
+                }).Start();
+                return false;
+            }
+        }
 
         private void OnEnable()
         {
             _button.onClick.AddListener(PlotFig);
-            _semaphoreSlim = new SemaphoreSlim(1, 1);
         }
 
         private void OnDisable()
         {
             _button.onClick.RemoveListener(PlotFig);
-            _semaphoreSlim.Dispose();
         }
 
         private void Start()
