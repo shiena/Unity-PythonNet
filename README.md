@@ -3,7 +3,7 @@
 ## Development Environment
 
 - Windows
-- Unity6000.1.7f1 (.NET Framework is required at Api Compatibility Level)
+- Unity6000.1.7f1 (.NET Framework or both .NET Standard 2.1 and [Microsoft.CSharp](https://www.nuget.org/packages/microsoft.csharp/) is required at Api Compatibility Level)
 - [Python.NET](https://www.nuget.org/packages/pythonnet) 3.0.5
 - [Python Embeddable Package](https://www.python.org/downloads/windows/) 3.11.3
 
@@ -24,6 +24,8 @@ This is a sample project that integrates Unity and Python.NET. Pressing the *Plo
     + PythonLifeCycle.cs         : Python.NET initializer
     + PlotRandom.cs              : Call python script from C# using Python.NET for Unity UI
     + UIEventHandler.cs          : Call python script from C# using Python.NET for UI Toolkit
+  + Plugins/
+    + Microsoft.CSharp.dll       : Need for .NET Standard 2.1
   + StreamingAssets/
     + python-3.11.3-embed-amd64/ : python runtime
     + myproject/
