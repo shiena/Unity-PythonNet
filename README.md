@@ -3,7 +3,7 @@
 ## Development Environment
 
 - Windows
-- Unity6000.0.32f1 (.NET Framework is required at Api Compatibility Level)
+- Unity6000.1.7f1 (.NET Framework is required at Api Compatibility Level)
 - [Python.NET](https://www.nuget.org/packages/pythonnet) 3.0.5
 - [Python Embeddable Package](https://www.python.org/downloads/windows/) 3.11.3
 
