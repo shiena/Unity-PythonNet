@@ -15,15 +15,41 @@ namespace UnityPython
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void PythonInitialize()
         {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+#else
             Application.quitting += PythonShutdown;
+#endif
             Initialize();
         }
 
+#if UNITY_EDITOR
+        private static bool IsDomainReloadEnabled()
+        {
+            // Enter Play Mode Options が無効、または Domain Reload が有効な場合は true
+            return !UnityEditor.EditorSettings.enterPlayModeOptionsEnabled ||
+                   (UnityEditor.EditorSettings.enterPlayModeOptions & UnityEditor.EnterPlayModeOptions.DisableDomainReload) == 0;
+        }
+
+        private static void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange state)
+        {
+            if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode)
+            {
+                UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
+                if (!IsDomainReloadEnabled())
+                {
+                    // Domain Reload が無効の場合のみ明示的に Shutdown
+                    Shutdown();
+                }
+            }
+        }
+#else
         private static void PythonShutdown()
         {
             Application.quitting -= PythonShutdown;
             Shutdown();
         }
+#endif
 
         public static void Initialize()
         {

@@ -41,6 +41,28 @@ cd Assets\StreamingAssets\python-3.11.3-embed-amd64\
 .\Scripts\pip.exe freeze > myproject\requirements.txt
 ```
 
+## Editor Settings: Enter Play Mode Options
+
+The behavior when stopping Play mode depends on the Domain Reload setting.
+
+### Domain Reload Enabled (Recommended for development)
+
+| Pros | Cons |
+|------|------|
+| Fast Play mode stop | Slightly slower Play mode start |
+| Python code changes are reflected | - |
+| Clean Python state on each Play | - |
+
+### Domain Reload Disabled
+
+| Pros | Cons |
+|------|------|
+| Fast Play mode start | Slow Play mode stop (~12 seconds) |
+| - | Python code changes are NOT reflected |
+| - | `PythonEngine.Shutdown()` takes time due to GC cycles |
+
+**Settings:** Edit → Project Settings → Editor → Enter Play Mode Options
+
 ## Known Issues
 
 - `PythonEngine.PythonPath` is not applied when changing a different `PythonEngine.PythonPath` after calling `PythonEngine.Initialize()` / `PythonEngine.Shutdown()`.
