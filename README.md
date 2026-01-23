@@ -43,9 +43,9 @@ cd Assets\StreamingAssets\python-3.11.3-embed-amd64\
 
 ## Editor Settings: Enter Play Mode Options
 
-The behavior when stopping Play mode depends on the Domain Reload setting.
+Both Domain Reload enabled and disabled are supported with fast Play/Stop.
 
-### Domain Reload Enabled (Recommended for development)
+### Domain Reload Enabled
 
 | Pros | Cons |
 |------|------|
@@ -57,9 +57,9 @@ The behavior when stopping Play mode depends on the Domain Reload setting.
 
 | Pros | Cons |
 |------|------|
-| Fast Play mode start | Slow Play mode stop (~12 seconds) |
-| - | Python code changes are NOT reflected |
-| - | `PythonEngine.Shutdown()` takes time due to GC cycles |
+| Fast Play mode start | Python global state is preserved |
+| Fast Play mode stop | - |
+| Python code changes are reflected (via module reload) | - |
 
 **Settings:** Edit → Project Settings → Editor → Enter Play Mode Options
 

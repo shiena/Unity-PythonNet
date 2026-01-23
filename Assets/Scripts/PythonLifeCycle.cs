@@ -17,6 +17,11 @@ namespace UnityPython
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+            // Domain Reload 無効時は既に初期化済みの可能性がある
+            if (PythonEngine.IsInitialized)
+            {
+                return;
+            }
 #else
             Application.quitting += PythonShutdown;
 #endif
@@ -24,11 +29,21 @@ namespace UnityPython
         }
 
 #if UNITY_EDITOR
-        private static bool IsDomainReloadEnabled()
+        private static bool IsDomainReloadDisabled()
         {
-            // Enter Play Mode Options が無効、または Domain Reload が有効な場合は true
-            return !UnityEditor.EditorSettings.enterPlayModeOptionsEnabled ||
-                   (UnityEditor.EditorSettings.enterPlayModeOptions & UnityEditor.EnterPlayModeOptions.DisableDomainReload) == 0;
+            // Enter Play Mode Options が有効、かつ Domain Reload が無効な場合は true
+            return UnityEditor.EditorSettings.enterPlayModeOptionsEnabled &&
+                   (UnityEditor.EditorSettings.enterPlayModeOptions & UnityEditor.EnterPlayModeOptions.DisableDomainReload) != 0;
+        }
+
+        [UnityEditor.InitializeOnEnterPlayMode]
+        private static void OnEnterPlayMode()
+        {
+            if (IsDomainReloadDisabled())
+            {
+                // Domain Reload が無効の場合、Python モジュールをリロード
+                ReloadPythonModules();
+            }
         }
 
         private static void OnPlayModeStateChanged(UnityEditor.PlayModeStateChange state)
@@ -36,11 +51,34 @@ namespace UnityPython
             if (state == UnityEditor.PlayModeStateChange.ExitingPlayMode)
             {
                 UnityEditor.EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-                if (!IsDomainReloadEnabled())
-                {
-                    // Domain Reload が無効の場合のみ明示的に Shutdown
-                    Shutdown();
-                }
+                // Domain Reload が有効/無効に関わらず Shutdown は呼ばない
+                // - 有効: Unity が Domain をアンロードする際にクリーンアップ
+                // - 無効: 次の Play Start で ReloadPythonModules() でリロード
+            }
+        }
+
+        private static void ReloadPythonModules()
+        {
+            var myProject = $"{Application.streamingAssetsPath}/{MyProject}".Replace("\\", "/");
+            var testProject = $"{Application.streamingAssetsPath}/{TestProject}".Replace("\\", "/");
+
+            using (Py.GIL())
+            {
+                // myproject, test_project 配下のモジュールを sys.modules から削除
+                // 次の import 時に最新のコードが読み込まれる
+                PythonEngine.Exec($@"
+import sys
+paths = ['{myProject}', '{testProject}']
+to_delete = []
+for name, module in sys.modules.items():
+    file_path = getattr(module, '__file__', None)
+    if file_path:
+        file_path = file_path.replace('\\\\', '/')
+        if any(file_path.startswith(p) for p in paths):
+            to_delete.append(name)
+for name in to_delete:
+    del sys.modules[name]
+");
             }
         }
 #else
